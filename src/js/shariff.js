@@ -11,8 +11,19 @@ var Shariff = function(element, options) {
 
     // Ensure elemnt is empty
     $(element).empty();
-
-    this.options = $.extend({}, this.defaults, options, $(element).data());
+    
+    /**
+    * Add this check to provide compatibility with not escaped content in data-services attribute.
+    *
+    * SETU GmbH
+    * @author olki1
+    */
+    var data = $(element).data();
+    if (data.hasOwnProperty('services') && typeof data.services !== 'object') {
+        data.services = data.services.replace(/[\[\]]/g,'').replace(/&quot;/g, '').split(',');
+    }
+  
+    this.options = $.extend({}, this.defaults, options, data);
 
     // available services. /!\ Browserify can't require dynamically by now.
     var availableServices = [
